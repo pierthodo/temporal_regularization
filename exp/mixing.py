@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import cm
 import matplotlib
+from utils import get_pi
 
 def mixing():
     size = 10
@@ -41,4 +42,4 @@ def plot_3d(dist):
     
 if __name__ == '__main__':
     dist = mixing()
-    plot(dist)
+    plot_3d(dist)
