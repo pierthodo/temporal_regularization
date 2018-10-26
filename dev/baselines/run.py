@@ -55,8 +55,8 @@ def train(args, extra_args):
     print(extra_args)
     experiment = Experiment(api_key="HFFoR5WtTjoHuBGq6lYaZhG0c",
                             project_name="temporal_regularization", workspace="pierthodo",disabled=args.log_disable)
-    experiment.log_multiple_params(vars(args))
-    experiment.log_multiple_params(vars(extra_args))
+    experiment.log_multiple_params(dir(args))
+    experiment.log_multiple_params(dir(extra_args))
     env_type, env_id = get_env_type(args.env)
     print('env_type: {}'.format(env_type))
 
