@@ -150,12 +150,14 @@ class Runner(AbstractEnvRunner):
     run():
     - Make a mini batch
     """
-    def __init__(self, *, env, model, nsteps, gamma, lam):
+    def __init__(self, *, env, model, nsteps, gamma, lam,beta,theta):
         super().__init__(env=env, model=model, nsteps=nsteps)
         # Lambda used in GAE (General Advantage Estimation)
         self.lam = lam
         # Discount rate
         self.gamma = gamma
+        self.beta = beta
+        self.theta= theta
 
     def run(self):
         # Here, we init the lists that will contain the mb of experiences
@@ -193,13 +195,21 @@ class Runner(AbstractEnvRunner):
         mb_returns = np.zeros_like(mb_rewards)
         mb_advs = np.zeros_like(mb_rewards)
         lastgaelam = 0
+
+        prev = np.zeros(self.nsteps, 'float32')
+        for t in range(self.nsteps):
+            if t == 0:
+                prev[t] = mb_values[t]
+            else:
+                prev[t] = self.theta * prev[t - 1] + (1 - self.theta) * mb_values[t]
+
         for t in reversed(range(self.nsteps)):
             if t == self.nsteps - 1:
                 nextnonterminal = 1.0 - self.dones
                 nextvalues = last_values
             else:
                 nextnonterminal = 1.0 - mb_dones[t+1]
-                nextvalues = mb_values[t+1]
+                nextvalues = self.beta* prev[t-1] + (1-self.beta)*mb_values[t+1]
             delta = mb_rewards[t] + self.gamma * nextvalues * nextnonterminal - mb_values[t]
             mb_advs[t] = lastgaelam = delta + self.gamma * self.lam * nextnonterminal * lastgaelam
         mb_returns = mb_advs + mb_values
@@ -220,7 +230,7 @@ def constfn(val):
 
 def learn(*, network, env, total_timesteps, eval_env = None, seed=None, nsteps=2048, ent_coef=0.0, lr=3e-4,
             vf_coef=0.5,  max_grad_norm=0.5, gamma=0.99, lam=0.95,
-            log_interval=10, nminibatches=4, noptepochs=4, cliprange=0.2,
+            log_interval=10, nminibatches=4, noptepochs=4, cliprange=0.2,beta=0,theta=0,
             save_interval=0, load_path=None, **network_kwargs):
     '''
     Learn policy using PPO algorithm (https://arxiv.org/abs/1707.06347)
@@ -306,9 +316,9 @@ def learn(*, network, env, total_timesteps, eval_env = None, seed=None, nsteps=2
     if load_path is not None:
         model.load(load_path)
     # Instantiate the runner object
-    runner = Runner(env=env, model=model, nsteps=nsteps, gamma=gamma, lam=lam)
+    runner = Runner(env=env, model=model, nsteps=nsteps, gamma=gamma, lam=lam,beta=beta,theta=theta)
     if eval_env is not None:
-        eval_runner = Runner(env = eval_env, model = model, nsteps = nsteps, gamma = gamma, lam= lam)
+        eval_runner = Runner(env = eval_env, model = model, nsteps = nsteps, gamma = gamma, lam= lam,beta=beta,theta=theta)
 
 
 
