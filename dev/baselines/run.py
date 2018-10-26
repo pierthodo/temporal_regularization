@@ -187,7 +187,7 @@ def main():
     extra_args = parse_cmdline_kwargs(unknown_args)
 
     experiment = Experiment(api_key="HFFoR5WtTjoHuBGq6lYaZhG0c",
-                            project_name="temporal_regularization", workspace="pierthodo",disabled=extra_args.log_disable)
+                            project_name="temporal_regularization", workspace="pierthodo",disabled=args.log_disable)
     experiment.log_multiple_params(args)
     experiment.log_multiple_params(extra_args)
 
