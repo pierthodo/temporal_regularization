@@ -1,4 +1,5 @@
 import sys
+from comet_ml import Experiment
 import multiprocessing
 import os.path as osp
 import gym
