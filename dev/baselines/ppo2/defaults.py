@@ -7,7 +7,7 @@ def mujoco():
         noptepochs=10,
         log_interval=1,
         ent_coef=0.0,
-        lr=lambda f: 3e-4 * f,
+        lr=lambda f: 3e-4 * f,beta=0,theta=0,
         cliprange=0.2,
         value_network='copy'
     )
