@@ -230,7 +230,7 @@ def constfn(val):
 
 def learn(*, network, env, total_timesteps, eval_env = None, seed=None, nsteps=2048, ent_coef=0.0, lr=3e-4,
             vf_coef=0.5,  max_grad_norm=0.5, gamma=0.99, lam=0.95,
-            log_interval=10, nminibatches=4, noptepochs=4, cliprange=0.2,beta=0,theta=0,
+            log_interval=10, nminibatches=4, noptepochs=4, cliprange=0.2,beta=0,theta=0,experiment=0,
             save_interval=0, load_path=None, **network_kwargs):
     '''
     Learn policy using PPO algorithm (https://arxiv.org/abs/1707.06347)
@@ -386,6 +386,7 @@ def learn(*, network, env, total_timesteps, eval_env = None, seed=None, nsteps=2
         tnow = time.time()
         # Calculate the fps (frame per second)
         fps = int(nbatch / (tnow - tstart))
+        print(values)
         if update % log_interval == 0 or update == 1:
             # Calculates if value function is a good predicator of the returns (ev > 1)
             # or if it's just worse than predicting nothing (ev =< 0)
@@ -397,6 +398,12 @@ def learn(*, network, env, total_timesteps, eval_env = None, seed=None, nsteps=2
             logger.logkv("explained_variance", float(ev))
             logger.logkv('eprewmean', safemean([epinfo['r'] for epinfo in epinfobuf]))
             logger.logkv('eplenmean', safemean([epinfo['l'] for epinfo in epinfobuf]))
+            experiment.log_multiple_metrics({"serial_timesteps": update*nsteps,"nupdates": update,
+                                             'eprewmean': safemean([epinfo['r'] for epinfo in epinfobuf]),
+                                             'eplenmean': safemean([epinfo['l'] for epinfo in epinfobuf]),
+                                             "explained_variance": float(ev),
+                                             "fps": fps,"Value variance":values.std(),"Value mean":values.mean(),"value variance trajectory":(values[1:]-values[:-1]).mean()}
+                        ,step=update*nbatch)
             if eval_env is not None:
                 logger.logkv('eval_eprewmean', safemean([epinfo['r'] for epinfo in eval_epinfobuf]) )
                 logger.logkv('eval_eplenmean', safemean([epinfo['l'] for epinfo in eval_epinfobuf]) )

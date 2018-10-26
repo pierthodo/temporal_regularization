@@ -72,10 +72,14 @@ def train(args, extra_args):
 
     print('Training {} on {}:{} with arguments \n{}'.format(args.alg, env_type, env_id, alg_kwargs))
 
+    experiment = Experiment(api_key="HFFoR5WtTjoHuBGq6lYaZhG0c",
+                            project_name="temporal_regularization", workspace="pierthodo",disabled=args.log_disable)
+    experiment.log_multiple_params(args)
+    experiment.log_multiple_params(extra_args)
     model = learn(
         env=env,
         seed=seed,
-        total_timesteps=total_timesteps,
+        total_timesteps=total_timesteps,experiment=experiment,
         **alg_kwargs
     )
 
@@ -186,10 +190,6 @@ def main():
     args, unknown_args = arg_parser.parse_known_args()
     extra_args = parse_cmdline_kwargs(unknown_args)
 
-    experiment = Experiment(api_key="HFFoR5WtTjoHuBGq6lYaZhG0c",
-                            project_name="temporal_regularization", workspace="pierthodo",disabled=args.log_disable)
-    experiment.log_multiple_params(args)
-    experiment.log_multiple_params(extra_args)
 
     if MPI is None or MPI.COMM_WORLD.Get_rank() == 0:
         rank = 0
