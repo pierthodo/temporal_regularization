@@ -4,7 +4,6 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 
-#### TO FIX THE GRAPH NOT EXACTLY THE SAME AS THE PAPER
 
 
 def get_bias():
