@@ -1,12 +1,12 @@
-This is the repository for the paper "Temporal Regularization for Markov Decision Process" https://arxiv.org/abs/1811.00429 that will be presented at NIPS 2018.
+This is the repository for the paper "Temporal Regularization for Markov Decision Process" https://arxiv.org/abs/1811.00429 that will be presented at NIPS 2018. \\
 If you use this repository please cite the paper:
 
-@article{thodoroff2018temporal,
-  title={Temporal Regularization in Markov Decision Process},
-  author={Thodoroff, Pierre and Durand, Audrey and Pineau, Joelle and Precup, Doina},
-  journal={arXiv preprint arXiv:1811.00429},
-  year={2018}
-}
+@article{thodoroff2018temporal,\\
+  title={Temporal Regularization in Markov Decision Process},\\
+  author={Thodoroff, Pierre and Durand, Audrey and Pineau, Joelle and Precup, Doina},\\
+  journal={arXiv preprint arXiv:1811.00429},\\
+  year={2018}\\
+}\\
 
 Simple experiments:
 
